@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+@theme {
+    --font-sans:
+        "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+}
+
+.choices {
+    margin-bottom: 0;
+    font-size: inherit;
+}
+
+.choices__inner {
+    min-height: 44px;
+    padding: 0.625rem 0.875rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgb(226 232 240);
+    background-color: rgb(248 250 252 / 0.5);
+}
+
+.choices.is-focused .choices__inner,
+.choices.is-open .choices__inner,
+.choices.is-active .choices__inner {
+    border-color: rgb(16 185 129);
+    box-shadow: 0 0 0 2px rgb(209 250 229);
+    background-color: #fff;
+}
+
+.choices[data-type*="select-one"] .choices__inner {
+    padding-bottom: 0.625rem;
+}
+
+.choices__list--single {
+    padding: 0;
+}
+
+.choices__list--single .choices__item {
+    padding-right: 1.75rem;
+    color: rgb(15 23 42);
+}
+
+.choices__placeholder {
+    opacity: 1;
+    color: rgb(148 163 184);
+}
+
+.choices__input {
+    margin-bottom: 0;
+    background-color: transparent;
+    color: rgb(15 23 42);
+}
+
+.choices__list--dropdown,
+.choices__list[aria-expanded] {
+    margin-top: 0.5rem;
+    border: 1px solid rgb(226 232 240);
+    border-radius: 0.75rem;
+    box-shadow: 0 12px 30px -18px rgb(15 23 42 / 0.35);
+    max-height: 16rem;
+    overflow-y: auto;
+    z-index: 50;
+}
+
+.choices__list--dropdown .choices__item,
+.choices__list[aria-expanded] .choices__item {
+    padding: 0.75rem 0.875rem;
+}
+
+.choices__list--dropdown .choices__item--selectable.is-highlighted,
+.choices__list[aria-expanded] .choices__item--selectable.is-highlighted {
+    background-color: rgb(236 253 245);
+    color: rgb(6 95 70);
+}
+
+.choices__list--dropdown .choices__item--selectable,
+.choices__list[aria-expanded] .choices__item--selectable {
+    border-bottom: 1px solid rgb(241 245 249);
+}
+
+.choices__list--dropdown .choices__item--selectable:last-child,
+.choices__list[aria-expanded] .choices__item--selectable:last-child {
+    border-bottom: 0;
+}
