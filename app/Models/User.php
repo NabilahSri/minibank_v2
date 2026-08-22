@@ -14,6 +14,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Models\Activity;
 
 #[Fillable(['username', 'password', 'role'])]
 #[Hidden(['password', 'remember_token'])]
@@ -31,7 +32,7 @@ class User extends Authenticatable
             ->setDescriptionForEvent(fn(string $eventName) => "User has been {$eventName}");
     }
 
-    public function tapActivity(\Spatie\Activitylog\Models\Activity $activity, string $eventName)
+    public function tapActivity(Activity $activity, string $eventName)
     {
         $activity->properties = $activity->properties->merge([
             'ip' => request()?->ip(),

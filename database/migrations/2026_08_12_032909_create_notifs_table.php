@@ -23,7 +23,7 @@ return new class extends Migration
             $table->dateTime('date')->nullable();
             $table->string('bank_code', 10)->nullable();
             $table->string('bank_name', 50)->nullable();
-            $table->string('ref', 80)->nullable()->unique();
+            $table->string('ref', 80)->nullable();
             $table->string('channel', 30)->nullable();
             $table->string('name', 150)->nullable();
             $table->string('phone', 30)->nullable();
