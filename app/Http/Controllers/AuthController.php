@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -14,7 +15,20 @@ class AuthController extends Controller
             'password' => 'required|string'
         ]);
 
-        if (!Auth::attempt($credentials, $req->filled('remember'))) {
+        $user = \App\Models\User::where('username', $credentials['username'])->first();
+        $isAuthenticated = false;
+
+        if ($user) {
+            $isSha1 = strlen($user->password) === 40;
+            $isValid = $isSha1 ? (sha1($credentials['password']) === $user->password) : Hash::check($credentials['password'], $user->password);
+            
+            if ($isValid) {
+                Auth::login($user, $req->filled('remember'));
+                $isAuthenticated = true;
+            }
+        }
+
+        if (!$isAuthenticated) {
             return back()
                 ->withErrors(['login_gagal' => 'Username atau password salah.'])
                 ->with('toast_error', [

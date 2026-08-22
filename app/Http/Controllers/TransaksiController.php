@@ -66,7 +66,10 @@ class TransaksiController extends Controller
                     ->withErrors(['pin' => 'PIN wajib diisi untuk melakukan penarikan.']);
             }
 
-            if (!Hash::check($req->pin, $rekening->pin)) {
+            $isSha1 = strlen($rekening->pin) === 40;
+            $isValid = $isSha1 ? (sha1($req->pin) === $rekening->pin) : Hash::check($req->pin, $rekening->pin);
+
+            if (!$isValid) {
                 return redirect()->back()
                     ->withInput()
                     ->withErrors(['pin' => 'PIN yang Anda masukkan salah.']);

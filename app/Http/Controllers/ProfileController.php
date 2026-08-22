@@ -69,7 +69,9 @@ class ProfileController extends Controller
 
         $request->validate([
             'password_lama' => ['required', function ($attribute, $value, $fail) use ($user) {
-                if (!Hash::check($value, $user->password)) {
+                $isSha1 = strlen($user->password) === 40;
+                $isValid = $isSha1 ? (sha1($value) === $user->password) : Hash::check($value, $user->password);
+                if (!$isValid) {
                     $fail('Password lama tidak sesuai.');
                 }
             }],
