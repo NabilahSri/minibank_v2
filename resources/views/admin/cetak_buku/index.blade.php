@@ -267,7 +267,7 @@
                 margin: 0 !important;
                 padding: 0 !important;
                 background: white !important;
-                font-size: 8px !important;
+                font-size: 9px !important;
                 color: black !important;
             }
 

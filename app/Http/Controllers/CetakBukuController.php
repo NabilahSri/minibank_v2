@@ -29,7 +29,7 @@ class CetakBukuController extends Controller
                     $q->where('rekening_id', $rekeningId)
                       ->orWhere('rekening_tujuan_id', $rekeningId);
                 })
-                ->with(['sandi', 'user'])
+                ->with(['sandi', 'user.pegawai'])
                 ->orderBy('waktu', 'asc')
                 ->orderBy('created_at', 'asc')
                 ->get();
@@ -60,8 +60,21 @@ class CetakBukuController extends Controller
                     }
                 }
                 
-                // Use last 4 characters of user UUID or username as signature
-                $paraf = $tx->user ? substr(str_replace('-', '', $tx->user->id), -4) : '—';
+                // Ambil inisial nama atau username
+                $paraf = '—';
+                if ($tx->user) {
+                    $name = $tx->user->pegawai->nama ?? $tx->user->username;
+                    $words = explode(' ', trim($name));
+                    $initials = '';
+                    foreach ($words as $w) {
+                        if (!empty($w)) $initials .= strtoupper($w[0]);
+                    }
+                    $initials = substr($initials, 0, 2); // Maksimal 2 huruf pertama
+                    
+                    // Tambahkan 2 karakter terakhir UUID agar pasti unik jika inisial sama
+                    $suffix = strtoupper(substr(str_replace('-', '', $tx->user->id), -2));
+                    $paraf = $initials . $suffix;
+                }
 
                 $formattedTransactions[] = [
                     'index' => $index + 1,
