@@ -273,9 +273,8 @@
 
             .passbook-row {
                 display: block !important;
-                height: 20px !important;
-                /* Diperbesar sedikit ke 20px */
-                line-height: 20px !important;
+                height: 21.25px !important;
+                line-height: 21.25px !important;
                 width: 100% !important;
                 page-break-inside: avoid !important;
                 white-space: nowrap !important;
@@ -307,18 +306,19 @@
             }
 
             .col-saldo {
-                width: 94px !important;
+                width: 115px !important;
                 text-align: right !important;
             }
 
             .col-paraf {
-                width: 55px !important;
+                width: 50px !important;
                 text-align: center !important;
                 margin-left: 10px !important;
             }
 
             @page {
-                margin-left: 0.2in;
+                margin-left: 0.15in;
+                /* Nilai tengah antara 0.1 dan 0.2 */
                 margin-top: 0.6in;
             }
         }
