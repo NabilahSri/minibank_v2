@@ -305,6 +305,18 @@
                                 <td class="py-3 px-4 sm:px-5 whitespace-nowrap text-right">
                                     <div
                                         class="inline-flex items-center gap-1 opacity-70 group-hover:opacity-100 transition">
+                                        <button type="button" title="Cetak Sampul"
+                                            class="btn-print-cover w-8 h-8 rounded-lg bg-slate-50 hover:bg-indigo-50 text-slate-500 hover:text-indigo-600 border border-slate-200 hover:border-indigo-200 flex items-center justify-center transition"
+                                            data-no-rek="{{ $rek->no_rek }}"
+                                            data-nama="{{ $rek->nasabah?->nama ?? '-' }}"
+                                            data-ortu="{{ $rek->nasabah?->nama_ortu ?? '-' }}"
+                                            data-alamat="{{ $rek->nasabah?->alamat ?? '-' }}">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
+                                                viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                                            </svg>
+                                        </button>
                                         <a href="{{ route('rekening.subrekening', $rek) }}" title="Sub Rekening"
                                             class="w-8 h-8 rounded-lg bg-slate-50 hover:bg-emerald-50 text-slate-500 hover:text-emerald-600 border border-slate-200 hover:border-emerald-200 flex items-center justify-center transition">
                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
@@ -389,6 +401,91 @@
         </div>
 
     </div>
+
+    <!-- Hidden Printing Cover Container -->
+    <div id="print-cover-container">
+        <div class="cover-row" id="cover-no-rek"></div>
+        <div class="cover-row" id="cover-nama"></div>
+        <div class="cover-row" id="cover-ortu">-</div>
+        <div class="cover-row" id="cover-alamat"></div>
+    </div>
+
+    <style>
+        /* Hidden from screen view */
+        #print-cover-container {
+            display: none;
+        }
+
+        @media print {
+
+            /* Hide the web app UI completely from layout so it doesn't leave blank pages */
+            #sidebar,
+            #sidebar-overlay,
+            header,
+            footer,
+            .space-y-5,
+            .space-y-6,
+            form {
+                display: none !important;
+            }
+
+            body,
+            html {
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            /* Only show cover elements */
+            #print-cover-container {
+                display: block !important;
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                background: white !important;
+                font-family: 'Courier New', Courier, monospace !important;
+                font-size: 12px !important;
+                /* Sesuaikan ukuran font cover */
+                font-weight: bold !important;
+                color: black !important;
+                line-height: 2 !important;
+                /* Jarak antar baris */
+            }
+
+            .cover-row {
+                display: block !important;
+                width: 100% !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+            }
+
+            #cover-no-rek {
+                margin-bottom: 15px !important;
+                /* Jarak dari no rek ke nama */
+            }
+
+            #cover-nama {
+                margin-bottom: 15px !important;
+                /* Jarak dari nama ke ortu */
+            }
+
+            #cover-ortu {
+                margin-bottom: 15.25px !important;
+                /* Jarak dari ortu ke alamat */
+            }
+
+            @page {
+                margin-left: 2in;
+                /* Sesuai contoh gambar jarak kirinya jauh */
+                margin-top: 0.5in;
+                /* Sesuai contoh gambar jarak atasnya lumayan jauh */
+            }
+        }
+    </style>
 @endsection
 
 @section('scripts')
@@ -452,6 +549,31 @@
                             });
                         }
                         doConfirm();
+                    });
+                });
+
+                // Print Cover Logic
+                const printBtns = document.querySelectorAll('.btn-print-cover');
+                const coverNoRek = document.getElementById('cover-no-rek');
+                const coverNama = document.getElementById('cover-nama');
+                // const coverOrtu = document.getElementById('cover-ortu'); // Ortu hardcoded to '-' according to user request
+                const coverAlamat = document.getElementById('cover-alamat');
+
+                printBtns.forEach(function(btn) {
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const noRek = btn.getAttribute('data-no-rek') || '';
+                        const nama = btn.getAttribute('data-nama') || '';
+                        const alamat = btn.getAttribute('data-alamat') || '';
+
+                        // Populate the hidden container
+                        coverNoRek.innerText = noRek;
+                        coverNama.innerText = nama.toUpperCase();
+                        // coverOrtu.innerText = '-';
+                        coverAlamat.innerText = alamat;
+
+                        // Trigger print
+                        window.print();
                     });
                 });
             }

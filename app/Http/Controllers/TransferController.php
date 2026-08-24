@@ -49,7 +49,8 @@ class TransferController extends Controller
         $query = Transaksi::with(['rekeningAsal.nasabah', 'rekeningTujuan.nasabah', 'subrekening', 'sandi'])
             ->whereHas('sandi', function ($q) {
                 $q->where('jenis_transaksi', 'transfer');
-            });
+            })
+            ->whereDate('waktu', today());
 
         if ($search !== '') {
             $query->where(function ($q) use ($search) {

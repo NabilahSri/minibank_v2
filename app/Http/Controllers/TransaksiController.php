@@ -26,7 +26,8 @@ class TransaksiController extends Controller
         $query = Transaksi::with(['rekeningAsal.nasabah', 'sandi'])
             ->whereHas('sandi', function ($q) {
                 $q->whereIn('jenis_transaksi', ['setor', 'tarik']);
-            });
+            })
+            ->whereDate('waktu', today());
 
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
