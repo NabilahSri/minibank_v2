@@ -474,7 +474,7 @@
             }
 
             #cover-ortu {
-                margin-bottom: 15.25px !important;
+                margin-bottom: 10px !important;
                 /* Jarak dari ortu ke alamat */
             }
 
