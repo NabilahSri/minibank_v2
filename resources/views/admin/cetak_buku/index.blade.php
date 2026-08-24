@@ -20,8 +20,7 @@
 
         <!-- Filter Card -->
         <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm  p-4 sm:p-5">
-            <form action="{{ route('cetakbuku.index') }}" method="GET"
-                class="flex flex-col sm:flex-row items-stretch gap-2">
+            <form action="{{ route('cetakbuku.index') }}" method="GET" class="flex flex-col sm:flex-row items-stretch gap-2">
                 <div class="flex-1 min-w-0">
                     <select name="rekening_id" id="select_rekening" data-searchable="true"
                         data-placeholder="Cari nama nasabah / nomor rekening..." required
@@ -185,7 +184,8 @@
                                     class="w-full px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 transition appearance-none">
                                     @forelse ($formattedTransactions as $tx)
                                         <option value="{{ $tx['index'] }}">Record {{ $tx['index'] }}
-                                            ({{ $tx['waktu']->format('d/m/Y') }} - {{ $tx['sandi'] }})</option>
+                                            ({{ $tx['waktu']->format('d/m/Y') }} - {{ $tx['sandi'] }})
+                                        </option>
                                     @empty
                                         <option value="">Tidak ada record</option>
                                     @endforelse
@@ -239,40 +239,25 @@
 
         @media print {
 
-            /* Hide all web elements */
-            body,
-            html,
+            /* Hide the web app UI completely from layout so it doesn't leave blank pages */
             #sidebar,
             #sidebar-overlay,
             header,
-            main,
             footer,
-            div,
-            aside,
-            nav,
-            form,
-            button,
-            h1,
-            h2,
-            h3,
-            p,
-            table,
-            thead,
-            tbody,
-            tr,
-            th,
-            td {
-                visibility: hidden !important;
-                background: transparent !important;
-                box-shadow: none !important;
+            .space-y-5,
+            .space-y-6,
+            #modalPrintBuku {
+                display: none !important;
+            }
+
+            body,
+            html {
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
             }
 
             /* Only show passbook elements */
-            #print-passbook-container,
-            #print-passbook-container * {
-                visibility: visible !important;
-            }
-
             #print-passbook-container {
                 display: block !important;
                 position: absolute !important;
@@ -283,62 +268,59 @@
                 padding: 0 !important;
                 background: white !important;
                 font-family: 'Courier New', Courier, monospace !important;
-                font-size: 11px !important;
+                font-size: 8px !important;
                 color: black !important;
             }
 
             .passbook-row {
                 display: block !important;
-                height: 0.8cm !important;
-                /* Customizable line height to fit physical passbook */
-                position: relative !important;
+                height: 20px !important;
+                /* Diperbesar sedikit ke 20px */
+                line-height: 20px !important;
                 width: 100% !important;
                 page-break-inside: avoid !important;
+                white-space: nowrap !important;
             }
 
             .passbook-row span {
-                position: absolute !important;
                 display: inline-block !important;
-            }
-
-            /* Column layout offsets matching passbook lines */
-            .col-no {
-                left: 0.5cm !important;
+                vertical-align: middle !important;
             }
 
             .col-date {
-                left: 1.5cm !important;
+                width: 70px !important;
+                text-align: left !important;
             }
 
             .col-sandi {
-                left: 4.2cm !important;
+                width: 40px !important;
+                text-align: center !important;
             }
 
             .col-debit {
-                left: 5.5cm !important;
+                width: 95px !important;
                 text-align: right !important;
-                width: 2.2cm !important;
             }
 
             .col-kredit {
-                left: 8.2cm !important;
+                width: 95px !important;
                 text-align: right !important;
-                width: 2.2cm !important;
             }
 
             .col-saldo {
-                left: 11.0cm !important;
+                width: 94px !important;
                 text-align: right !important;
-                width: 2.5cm !important;
             }
 
             .col-paraf {
-                left: 14.2cm !important;
+                width: 55px !important;
+                text-align: center !important;
+                margin-left: 10px !important;
             }
 
             @page {
-                size: auto;
-                margin: 0mm;
+                margin-left: 0.2in;
+                margin-top: 0.9in;
             }
         }
     </style>
@@ -418,15 +400,14 @@
                             const kreditText = tx.kredit ? numberFormat(tx.kredit) : '-';
                             const saldoText = numberFormat(tx.saldo);
 
-                            // Format date into dd/mm/yyyy
+                            // Format date into dd/mm/YYYY with index
                             const dateObj = new Date(tx.waktu);
                             const day = String(dateObj.getDate()).padStart(2, '0');
                             const month = String(dateObj.getMonth() + 1).padStart(2, '0');
                             const year = dateObj.getFullYear();
-                            const dateFormatted = `${day}/${month}/${year}`;
+                            const dateFormatted = `[${tx.index}] ${day}/${month}/${year}`;
 
                             row.innerHTML = `
-                                <span class="col-no">[${tx.index}]</span>
                                 <span class="col-date">${dateFormatted}</span>
                                 <span class="col-sandi">${tx.sandi}</span>
                                 <span class="col-debit">${debitText}</span>
