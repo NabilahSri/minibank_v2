@@ -449,7 +449,6 @@
                 font-family: 'Courier New', Courier, monospace !important;
                 font-size: 12px !important;
                 /* Sesuaikan ukuran font cover */
-                font-weight: bold !important;
                 color: black !important;
                 line-height: 2 !important;
                 /* Jarak antar baris */
@@ -464,17 +463,17 @@
             }
 
             #cover-no-rek {
-                margin-bottom: 15px !important;
+                margin-bottom: 13px !important;
                 /* Jarak dari no rek ke nama */
             }
 
             #cover-nama {
-                margin-bottom: 15px !important;
+                margin-bottom: 13px !important;
                 /* Jarak dari nama ke ortu */
             }
 
             #cover-ortu {
-                margin-bottom: 10px !important;
+                margin-bottom: 8px !important;
                 /* Jarak dari ortu ke alamat */
             }
 
