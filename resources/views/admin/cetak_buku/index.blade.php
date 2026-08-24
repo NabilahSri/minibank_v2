@@ -267,7 +267,6 @@
                 margin: 0 !important;
                 padding: 0 !important;
                 background: white !important;
-                font-family: 'Courier New', Courier, monospace !important;
                 font-size: 8px !important;
                 color: black !important;
             }
@@ -298,7 +297,7 @@
             }
 
             .col-debit {
-                width: 95px !important;
+                width: 90px !important;
                 text-align: right !important;
             }
 
@@ -320,7 +319,7 @@
 
             @page {
                 margin-left: 0.2in;
-                margin-top: 0.9in;
+                margin-top: 0.6in;
             }
         }
     </style>
