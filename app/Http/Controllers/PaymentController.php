@@ -110,8 +110,8 @@ class PaymentController extends Controller
                     'waktu'       => $request->input('date') ?? now(),
                 ]);
 
-                // Tambah Saldo Rekening Nasabah
-                $rekening->increment('saldo', $amount);
+                // Saldo dihitung otomatis dari tabel transaksi (via getSaldoAttribute)
+                // Jadi kita tidak perlu melakukan $rekening->increment('saldo', $amount);
 
                 // Update status tagihan jika ada yang cocok
                 Tagihan::where('nomor_pembayaran', $request->input('number'))
