@@ -9,6 +9,8 @@ class Notif extends Model
 {
     use HasUuids;
 
+    public $timestamps = false;
+
     protected $guarded = [];
 
     protected $casts = [
