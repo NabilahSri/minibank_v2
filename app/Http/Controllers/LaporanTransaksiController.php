@@ -26,9 +26,13 @@ class LaporanTransaksiController extends Controller
 
         $start = Carbon::parse($startDate)->startOfDay();
         $end = Carbon::parse($endDate)->endOfDay();
+        $user = \Illuminate\Support\Facades\Auth::user();
 
         $query = Transaksi::with(['rekeningAsal.nasabah', 'rekeningTujuan.nasabah', 'sandi', 'user'])
             ->whereBetween('waktu', [$start, $end])
+            ->when($user->role === 'opr', function($q) use ($user) {
+                $q->whereHas('user.pegawai', fn($q2) => $q2->where('lokasi_id', $user->pegawai->lokasi_id));
+            })
             ->orderBy('waktu', 'desc')
             ->orderBy('created_at', 'desc');
 
@@ -125,9 +129,13 @@ class LaporanTransaksiController extends Controller
 
         $start = Carbon::parse($startDate)->startOfDay();
         $end = Carbon::parse($endDate)->endOfDay();
+        $user = \Illuminate\Support\Facades\Auth::user();
 
         $query = Transaksi::with(['rekeningAsal.nasabah', 'rekeningTujuan.nasabah', 'sandi', 'user'])
             ->whereBetween('waktu', [$start, $end])
+            ->when($user->role === 'opr', function($q) use ($user) {
+                $q->whereHas('user.pegawai', fn($q2) => $q2->where('lokasi_id', $user->pegawai->lokasi_id));
+            })
             ->orderBy('waktu', 'asc')
             ->orderBy('created_at', 'asc');
 
@@ -211,9 +219,13 @@ class LaporanTransaksiController extends Controller
 
         $start = Carbon::parse($startDate)->startOfDay();
         $end = Carbon::parse($endDate)->endOfDay();
+        $user = \Illuminate\Support\Facades\Auth::user();
 
         $query = Transaksi::with(['rekeningAsal.nasabah', 'rekeningTujuan.nasabah', 'sandi', 'user'])
             ->whereBetween('waktu', [$start, $end])
+            ->when($user->role === 'opr', function($q) use ($user) {
+                $q->whereHas('user.pegawai', fn($q2) => $q2->where('lokasi_id', $user->pegawai->lokasi_id));
+            })
             ->orderBy('waktu', 'asc')
             ->orderBy('created_at', 'asc');
 

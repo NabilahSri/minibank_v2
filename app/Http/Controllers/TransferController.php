@@ -46,9 +46,13 @@ class TransferController extends Controller
         }
 
         // Query transfer transactions
+        $user = Auth::user();
         $query = Transaksi::with(['rekeningAsal.nasabah', 'rekeningTujuan.nasabah', 'subrekening', 'sandi'])
             ->whereHas('sandi', function ($q) {
                 $q->where('jenis_transaksi', 'transfer');
+            })
+            ->when($user->role === 'opr', function($q) use ($user) {
+                $q->whereHas('user.pegawai', fn($q2) => $q2->where('lokasi_id', $user->pegawai->lokasi_id));
             })
             ->whereDate('waktu', today());
 

@@ -204,6 +204,27 @@ class NasabahController extends Controller
             ]);
     }
 
+    public function resetPassword(Nasabah $nasabah)
+    {
+        if ($nasabah->user) {
+            $nasabah->user->update([
+                'password' => bcrypt('smkypc2026')
+            ]);
+
+            return redirect()->route('nasabah.index')
+                ->with('toast_success', [
+                    'title'   => 'Password Direset',
+                    'message' => "Password nasabah \"{$nasabah->nama}\" berhasil direset ke default (smkypc2026)."
+                ]);
+        }
+
+        return redirect()->route('nasabah.index')
+            ->with('toast_error', [
+                'title'   => 'Gagal Mereset',
+                'message' => "Nasabah \"{$nasabah->nama}\" tidak memiliki akun user terkait."
+            ]);
+    }
+
     public function export(Request $req)
     {
         $search = trim($req->input('q', ''));

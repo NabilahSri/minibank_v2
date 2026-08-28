@@ -51,7 +51,8 @@
                             </svg>
                         </button>
                     </div>
-                    <p class="text-[10px] sm:text-xs text-emerald-100/50">No. Rekening: {{ $rekening->no_rek ?? '-' }} | NIN: {{ $nasabah->nin ?? '-' }}</p>
+                    <p class="text-[10px] sm:text-xs text-emerald-100/50">No. Rekening: {{ $rekening->no_rek ?? '-' }} |
+                        NIN: {{ $nasabah->nin ?? '-' }}</p>
                 </div>
             </div>
         </div>
@@ -68,7 +69,8 @@
                         </svg>
                     </div>
                 </div>
-                <p class="text-lg sm:text-xl font-bold text-slate-900">Rp {{ number_format($setorBulanIni, 0, ',', '.') }}</p>
+                <p class="text-lg sm:text-xl font-bold text-slate-900">Rp {{ number_format($setorBulanIni, 0, ',', '.') }}
+                </p>
                 <span class="text-[10px] text-emerald-600 font-medium">Bulan ini</span>
             </div>
             <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm">
@@ -81,7 +83,8 @@
                         </svg>
                     </div>
                 </div>
-                <p class="text-lg sm:text-xl font-bold text-slate-900">Rp {{ number_format($tarikBulanIni, 0, ',', '.') }}</p>
+                <p class="text-lg sm:text-xl font-bold text-slate-900">Rp {{ number_format($tarikBulanIni, 0, ',', '.') }}
+                </p>
                 <span class="text-[10px] text-amber-600 font-medium">Bulan ini</span>
             </div>
             <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm">
@@ -96,19 +99,6 @@
                 </div>
                 <p class="text-lg sm:text-xl font-bold text-slate-900">{{ $totalMutasi }} Kali</p>
                 <span class="text-[10px] text-slate-500 font-medium">Transaksi</span>
-            </div>
-            <div class="p-4 rounded-2xl bg-white border border-slate-200/80 shadow-sm">
-                <div class="flex items-center justify-between mb-2">
-                    <p class="text-[10px] font-semibold text-slate-500 uppercase tracking-wider">Bunga Diperoleh</p>
-                    <div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                    </div>
-                </div>
-                <p class="text-lg sm:text-xl font-bold text-slate-900">Rp {{ number_format($bunga, 0, ',', '.') }}</p>
-                <span class="text-[10px] text-teal-600 font-medium">Simulasi</span>
             </div>
         </div>
 
@@ -129,7 +119,10 @@
                         $isIncoming = false;
                         if ($transaksi->sandi->jenis_transaksi == 'setor') {
                             $isIncoming = true;
-                        } elseif ($transaksi->sandi->jenis_transaksi == 'transfer' && $transaksi->rekening_tujuan_id == ($rekening->id ?? '')) {
+                        } elseif (
+                            $transaksi->sandi->jenis_transaksi == 'transfer' &&
+                            $transaksi->rekening_tujuan_id == ($rekening->id ?? '')
+                        ) {
                             $isIncoming = true;
                         }
                     @endphp
@@ -148,7 +141,7 @@
                         </div>
                         <div class="flex-1 min-w-0">
                             <p class="text-xs sm:text-sm font-semibold text-slate-800 truncate">
-                                @if($transaksi->sandi->jenis_transaksi == 'setor')
+                                @if ($transaksi->sandi->jenis_transaksi == 'setor')
                                     Setoran Tunai
                                 @elseif($transaksi->sandi->jenis_transaksi == 'tarik')
                                     Penarikan Tunai
@@ -161,7 +154,8 @@
                             </p>
                         </div>
                         <div class="text-right shrink-0">
-                            <p class="text-xs sm:text-sm font-bold {{ $isIncoming ? 'text-emerald-600' : 'text-amber-600' }}">
+                            <p
+                                class="text-xs sm:text-sm font-bold {{ $isIncoming ? 'text-emerald-600' : 'text-amber-600' }}">
                                 {{ $isIncoming ? '+' : '-' }} Rp {{ number_format($transaksi->nominal, 0, ',', '.') }}
                             </p>
                             <p class="text-[9px] sm:text-[10px] text-slate-400">Berhasil</p>
@@ -175,9 +169,44 @@
 
     </div>
 
+    <!-- MODAL OVERLAY PERMANEN -->
+    <div class="fixed inset-0 z-[9999] bg-slate-900/60 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-3xl p-7 sm:p-9 shadow-2xl relative overflow-hidden">
+            <!-- Dekorasi Background -->
+            <div class="absolute inset-0 bg-gradient-to-br from-emerald-50 to-white pointer-events-none"></div>
+            
+            <div class="relative z-10 text-center">
+                <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-5 shadow-sm">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                </div>
+                
+                <h2 class="text-2xl font-extrabold text-slate-800 mb-3 tracking-tight">Pindah ke Aplikasi Mobile</h2>
+                
+                <div class="text-sm text-slate-600 space-y-3 mb-7 text-left leading-relaxed">
+                    <p>Mulai saat ini, seluruh aktivitas perbankan Nasabah dialihkan sepenuhnya ke <strong>Aplikasi Mobile Minibank</strong>.</p>
+                    <p>Silakan unduh aplikasi kami di Google Play Store untuk dapat melanjutkan transaksi dan mengecek saldo tabungan Anda.</p>
+                </div>
+                
+                <a href="#" class="inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl w-full transition-all shadow-lg shadow-emerald-600/30">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M17.523 15.3414C17.523 17.5147 19.309 18.212 19.3374 18.225C19.3175 18.8687 18.847 19.9961 18.0645 21.1444C17.3855 22.1388 16.6666 23.1188 15.5492 23.1387C14.4507 23.1587 14.103 22.4827 12.8631 22.4827C11.6232 22.4827 11.2355 23.1188 10.1966 23.1587C9.11796 23.1975 8.2796 22.0989 7.579 21.0845C6.1416 18.9912 5.06409 15.7001 6.54133 13.1257C7.27218 11.849 8.54955 11.0253 9.94828 11.0054C11.0071 10.9854 12.0063 11.7225 12.6657 11.7225C13.3252 11.7225 14.5441 10.8256 15.823 10.9654C16.3625 10.9854 17.8812 11.1852 18.8603 12.6237C18.7804 12.6837 17.523 13.4228 17.523 15.3414ZM14.9398 8.86745C15.5393 8.14856 15.9388 7.17066 15.8291 6.17291C14.9698 6.21287 13.911 6.75121 13.2917 7.46914C12.7523 8.08726 12.2727 9.08522 12.4026 10.0631C13.3617 10.143 14.3408 9.58418 14.9398 8.86745Z"></path>
+                    </svg>
+                    Download di Play Store
+                </a>
+                
+                <form action="{{ route('logout') }}" method="POST" class="mt-5 block">
+                    @csrf
+                    <button type="submit" class="text-xs text-slate-400 hover:text-rose-500 font-semibold underline transition-colors">Keluar dari Web</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script>
         let saldoVisible = false;
-        const saldoAsli = 'Rp {{ number_format($saldo, 0, ",", ".") }}';
+        const saldoAsli = 'Rp {{ number_format($saldo, 0, ',', '.') }}';
 
         function toggleSaldo() {
             saldoVisible = !saldoVisible;
@@ -189,7 +218,6 @@
             } else {
                 icon.innerHTML =
                     '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />';
-            }
         }
     </script>
 @endsection

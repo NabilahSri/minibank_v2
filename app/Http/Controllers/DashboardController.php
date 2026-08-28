@@ -18,10 +18,14 @@ class DashboardController extends Controller
             // 1. Total Kas Tabungan
             $totalSetor = Transaksi::whereHas('sandi', function ($q) {
                 $q->where('jenis_transaksi', 'setor');
+            })->when($user->role === 'opr', function($q) use ($user) {
+                $q->whereHas('user.pegawai', fn($q2) => $q2->where('lokasi_id', $user->pegawai->lokasi_id));
             })->sum('nominal');
 
             $totalTarik = Transaksi::whereHas('sandi', function ($q) {
                 $q->where('jenis_transaksi', 'tarik');
+            })->when($user->role === 'opr', function($q) use ($user) {
+                $q->whereHas('user.pegawai', fn($q2) => $q2->where('lokasi_id', $user->pegawai->lokasi_id));
             })->sum('nominal');
 
             $totalKas = $totalSetor - $totalTarik;
@@ -30,10 +34,16 @@ class DashboardController extends Controller
             $totalNasabah = Nasabah::count();
 
             // 3. Transaksi Hari Ini
-            $transaksiHariIni = Transaksi::whereDate('waktu', today())->count();
+            $transaksiHariIni = Transaksi::whereDate('waktu', today())
+                ->when($user->role === 'opr', function($q) use ($user) {
+                    $q->whereHas('user.pegawai', fn($q2) => $q2->where('lokasi_id', $user->pegawai->lokasi_id));
+                })->count();
 
             // 4. Transaksi Terakhir
             $transaksiTerakhir = Transaksi::with(['rekeningAsal.nasabah.siswa', 'sandi'])
+                ->when($user->role === 'opr', function($q) use ($user) {
+                    $q->whereHas('user.pegawai', fn($q2) => $q2->where('lokasi_id', $user->pegawai->lokasi_id));
+                })
                 ->orderBy('waktu', 'desc')
                 ->limit(10)
                 ->get();
@@ -43,11 +53,17 @@ class DashboardController extends Controller
             $setoranBulanIni = Transaksi::whereMonth('waktu', $now->month)
                 ->whereYear('waktu', $now->year)
                 ->whereHas('sandi', fn($q) => $q->where('jenis_transaksi', 'setor'))
+                ->when($user->role === 'opr', function($q) use ($user) {
+                    $q->whereHas('user.pegawai', fn($q2) => $q2->where('lokasi_id', $user->pegawai->lokasi_id));
+                })
                 ->sum('nominal');
 
             $penarikanBulanIni = Transaksi::whereMonth('waktu', $now->month)
                 ->whereYear('waktu', $now->year)
                 ->whereHas('sandi', fn($q) => $q->where('jenis_transaksi', 'tarik'))
+                ->when($user->role === 'opr', function($q) use ($user) {
+                    $q->whereHas('user.pegawai', fn($q2) => $q2->where('lokasi_id', $user->pegawai->lokasi_id));
+                })
                 ->sum('nominal');
 
             $totalMutasiBulanIni = $setoranBulanIni + $penarikanBulanIni;
@@ -70,12 +86,11 @@ class DashboardController extends Controller
         $nasabah = $user->nasabah;
         $rekening = $nasabah ? $nasabah->rekening()->where('status', 1)->first() : null;
         $saldo = $rekening ? $rekening->saldo : 0;
-        
+
         $setorBulanIni = 0;
         $tarikBulanIni = 0;
         $totalMutasi = 0;
         $mutasiTerakhir = collect();
-        $bunga = 0;
 
         if ($rekening) {
             $now = now();
@@ -93,20 +108,17 @@ class DashboardController extends Controller
 
             $totalMutasi = Transaksi::where(function ($q) use ($rekening) {
                 $q->where('rekening_id', $rekening->id)
-                  ->orWhere('rekening_tujuan_id', $rekening->id);
+                    ->orWhere('rekening_tujuan_id', $rekening->id);
             })->count();
 
             $mutasiTerakhir = Transaksi::where(function ($q) use ($rekening) {
                 $q->where('rekening_id', $rekening->id)
-                  ->orWhere('rekening_tujuan_id', $rekening->id);
+                    ->orWhere('rekening_tujuan_id', $rekening->id);
             })
-            ->with(['sandi'])
-            ->orderBy('waktu', 'desc')
-            ->limit(10)
-            ->get();
-
-            // Perhitungan bunga simulasi bulanan
-            $bunga = $saldo * 0.0005;
+                ->with(['sandi'])
+                ->orderBy('waktu', 'desc')
+                ->limit(10)
+                ->get();
         }
 
         return view('nasabah.dashboard', compact(
@@ -117,8 +129,6 @@ class DashboardController extends Controller
             'tarikBulanIni',
             'totalMutasi',
             'mutasiTerakhir',
-            'bunga'
         ));
     }
 }
-

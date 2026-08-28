@@ -57,7 +57,7 @@ class AuthController extends Controller
                     ]);
 
             case 'nsb':
-                $nasabah = $user->nasabah
+                $nasabah = $user->nasabah()
                     ->whereHas('rekening', fn($q) => $q->where('status', 1))
                     ->with('rekening')->first();
                 if (!$nasabah) {

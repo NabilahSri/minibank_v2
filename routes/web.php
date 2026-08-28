@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/nasabah/{nasabah}/edit', [NasabahController::class, 'edit'])->name('nasabah.edit');
         Route::post('/nasabah/{nasabah}', [NasabahController::class, 'update'])->name('nasabah.update');
         Route::post('/nasabah/{nasabah}/destroy', [NasabahController::class, 'destroy'])->name('nasabah.destroy');
+        Route::post('/nasabah/{nasabah}/reset-password', [NasabahController::class, 'resetPassword'])->name('nasabah.reset-password');
 
         // Rekening
         Route::get('/rekening', [RekeningController::class, 'index'])->name('rekening.index');

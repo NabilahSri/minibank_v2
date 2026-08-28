@@ -23,9 +23,16 @@ class TransaksiController extends Controller
                 return $rek->nasabah?->nama ?? '';
             });
 
+        $user = Auth::user();
         $query = Transaksi::with(['rekeningAsal.nasabah', 'sandi'])
             ->whereHas('sandi', function ($q) {
                 $q->whereIn('jenis_transaksi', ['setor', 'tarik']);
+            })
+            ->whereHas('via', function ($q) {
+                $q->where('kode', '101'); // Kasir / Tunai
+            })
+            ->when($user->role === 'opr', function($q) use ($user) {
+                $q->whereHas('user.pegawai', fn($q2) => $q2->where('lokasi_id', $user->pegawai->lokasi_id));
             })
             ->whereDate('waktu', today());
 

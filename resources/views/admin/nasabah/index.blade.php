@@ -352,6 +352,18 @@
                                                     d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                             </svg>
                                         </a>
+                                        <form action="{{ route('nasabah.reset-password', $nsb) }}" method="POST"
+                                            class="form-reset-password inline-block" data-nama="{{ $nsb->nama }}">
+                                            @csrf
+                                            <button type="submit" title="Reset Password"
+                                                class="btn-reset w-8 h-8 rounded-lg bg-slate-50 hover:bg-amber-50 text-slate-500 hover:text-amber-600 border border-slate-200 hover:border-amber-200 flex items-center justify-center transition">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4v-3.252l7.55-7.55A6 6 0 0117 7z" />
+                                                </svg>
+                                            </button>
+                                        </form>
                                         <form action="{{ route('nasabah.destroy', $nsb) }}" method="POST"
                                             class="form-delete inline-block" data-nama="{{ $nsb->nama }}"
                                             data-rekening="{{ $rekeningTotal }}">
@@ -480,6 +492,45 @@
                             });
                         }
                         doConfirm();
+                    });
+                });
+
+                const formResets = document.querySelectorAll('.form-reset-password');
+                formResets.forEach(function(form) {
+                    form.addEventListener('submit', function(e) {
+                        if (form.dataset.confirmed === '1') return;
+                        e.preventDefault();
+
+                        const nama = form.getAttribute('data-nama') || 'nasabah ini';
+
+                        if (typeof window.Swal === 'undefined') {
+                            form.dataset.confirmed = '1';
+                            form.submit();
+                            return;
+                        }
+
+                        window.Swal.fire({
+                            title: 'Reset Password?',
+                            html: '<p class="text-sm text-slate-600 mt-1">Password nasabah <strong>' + nama + '</strong> akan direset ke password default (<strong>smkypc2026</strong>).</p>',
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Ya, Reset',
+                            cancelButtonText: 'Batal',
+                            reverseButtons: true,
+                            confirmButtonColor: '#f59e0b',
+                            cancelButtonColor: '#64748b',
+                            allowOutsideClick: false,
+                            customClass: {
+                                popup: 'rounded-2xl shadow-2xl',
+                                confirmButton: 'font-bold rounded-xl !px-5 !py-2.5 text-sm text-white',
+                                cancelButton: 'font-bold rounded-xl !px-5 !py-2.5 text-sm'
+                            }
+                        }).then(function(result) {
+                            if (result.isConfirmed) {
+                                form.dataset.confirmed = '1';
+                                form.submit();
+                            }
+                        });
                     });
                 });
             }
